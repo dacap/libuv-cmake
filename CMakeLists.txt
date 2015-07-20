@@ -9,6 +9,7 @@ set(SOURCES
   ${LIBUVDIR}/src/uv-common.c
   ${LIBUVDIR}/src/version.c)
 
+
 if(WIN32)
   add_definitions(-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600 -D_CRT_SECURE_NO_WARNINGS)
   include_directories(${LIBUVDIR}/src/win)
@@ -39,6 +40,33 @@ if(WIN32)
     ${LIBUVDIR}/src/win/winapi.c
     ${LIBUVDIR}/src/win/winsock.c)
 else()
+    if( ${CMAKE_SYSTEM_NAME} STREQUAL "Linux" )
+       set( SOURCES ${SOURCES}
+           ${LIBUVDIR}/src/unix/linux-syscalls.c
+           ${LIBUVDIR}/src/unix/linux-core.c
+	   ${LIBUVDIR}/src/unix/linux-inotify.c
+	 )
+    elseif ( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" )
+       set( SOURCES ${SOURCES}
+           ${LIBUVDIR}/src/unix/darwin.c
+	 )
+    elseif ( ${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD" )
+       set( SOURCES ${SOURCES}
+           ${LIBUVDIR}/src/unix/freebsd.c
+	 )
+    elseif ( ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD" )
+       set( SOURCES ${SOURCES}
+           ${LIBUVDIR}/src/unix/openbsd.c
+	 )
+    elseif ( ${CMAKE_SYSTEM_NAME} STREQUAL "NetBSD" )
+        set( SOURCES ${SOURCES}
+           ${LIBUVDIR}/src/unix/netbsd.c
+	 )
+    elseif  ( ${CMAKE_SYSTEM_NAME} STREQUAL "SunOS" )
+        set( SOURCES ${SOURCES}
+           ${LIBUVDIR}/src/unix/sunos.c
+         )
+  endif()
   include_directories(${LIBUVDIR}/src/unix)
   set(SOURCES ${SOURCES}
     ${LIBUVDIR}/src/unix/async.c
